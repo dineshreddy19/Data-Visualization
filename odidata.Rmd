@@ -1,0 +1,62 @@
+---
+title: "odi batting"
+author: "Dinesh Reddy"
+date: "27 January 2017"
+output: html_document
+---
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+## Importing odi dataset
+```{r}
+odi.batting.analysis <- read.csv("D:/Nandan Pendrive/APTITUDE/Aptitude Books/MANIPAL DATA SCIENCE - TERM-2/DATA VISUALIZATION/odi-batting-analysis.csv")
+   View(odi.batting.analysis)
+ head(odi.batting.analysis)
+ class(odi.batting.analysis)
+```
+## getting dimensions i.e how many rows and columns
+```{r}
+dim(filter(odi.batting.analysis,Player=="Sachin R Tendulkar"))
+dim(filter(odi.batting.analysis,Player=="Aamer Hanif"))
+dim(filter(odi.batting.analysis,Player=="Sachin R Tendulkar" | Player=="Aamer Hanif"))
+```
+## selecting column names
+```{r}
+ names(select(odi.batting.analysis,Country, Player, Runs))
+ names(select(odi.batting.analysis,-Ground, -ScoreRate))
+```
+## Filtering a player from a column and summarising his runs
+```{r}
+sachin= filter(odi.batting.analysis, Player=="Sachin R Tendulkar")
+ sachin %>% summarise(sum(Runs))
+ summary<-sachin %>% summarise(mean(Runs))
+```
+## To write the  column name
+```{r}
+summary<-sachin %>% summarise(TotalRuns=sum(Runs), Avgrun=mean(Runs))
+summary
+class(summary)
+```
+## How many Total runs India made and their average
+```{r}
+ india=filter(odi.batting.analysis,Country=="India")
+ indiaruns<- india %>% summarise(TotalRuns=sum(Runs),Avgrun=mean(Runs))
+ indiaruns
+```
+## Total runs made by every country and their average
+```{r}
+ a<-odi.batting.analysis %>% group_by(Country) %>% summarize(TotalRuns=sum(Runs))
+ a
+ b<- odi.batting.analysis %>% group_by(Country) %>% summarize(TotalRuns=sum(Runs),Avgrun=mean(Runs))
+b 
+```
+## using ggplot plotting  a bar graph , coord_flip will change the graph to vertical or horizontal
+```{r}
+g<-ggplot(data=b,mapping = aes(x=Country,y=TotalRuns,fill=Avgrun))+geom_bar(stat = "identity")+coord_flip()
+g 
+```
+## plotting a histogram
+```{r}
+ggplot(odi.batting.analysis,aes(x=Runs))+geom_histogram()
+```
